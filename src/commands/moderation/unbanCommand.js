@@ -2,10 +2,10 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('nickname')
-        .setDescription('Set a nickname.'),
+        .setName('unban')
+        .setDescription('Unban a user.'),
 
     async execute(interaction) {
-        await interaction.reply('Nickname Command');
+        await interaction.reply('Unban Command');
     }
 };

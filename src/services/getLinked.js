@@ -47,7 +47,7 @@ async function getDiscord(uuid) {
 
 async function getUUID(discordID) {
     const db = await loadDB();
-    return db[discordID] || null
+    return db[discordID] || null;
 }
 
 module.exports = { addUser, removeUser, inDB, loadDB, getUUID, getDiscord };

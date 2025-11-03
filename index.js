@@ -1,7 +1,9 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+const config = require('./config.json');
+
+const { token } = config.bot;
 
 const commandHandler = require('./src/commandHandler.js');
 const eventHandler = require('./src/eventHandler.js');

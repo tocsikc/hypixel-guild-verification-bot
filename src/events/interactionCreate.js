@@ -13,16 +13,21 @@ module.exports = {
 			return;
 		}
 		if (permissions.developerMode) {
-			if (interaction.replied || interaction.deferred) {
-				return interaction.followUp({
-					content: '\`❌\` The bot is currently in developer only mode.',
-					flags: MessageFlags.Ephemeral
-				});
-			} else {
-				return interaction.reply({
-					content: '\`❌\` The bot is currently in developer only mode.',
-					flags: MessageFlags.Ephemeral
-				});
+			const devModeRoleID = permissions.devRole;
+			if (!devModeRoleID) {
+				console.warn(`No role ID set in config.json for ${devModeRoleID}`);
+			} else if (!interaction.member.roles.cache.has(devModeRoleID)) {
+				if (interaction.replied || interaction.deferred) {
+					return interaction.followUp({
+						content: '\`❌\` The bot is currently in developer only mode.',
+						flags: MessageFlags.Ephemeral
+					});
+				} else {
+					return interaction.reply({
+						content: '\`❌\` The bot is currently in developer only mode.',
+						flags: MessageFlags.Ephemeral
+					});
+				}
 			}
 		}
 
