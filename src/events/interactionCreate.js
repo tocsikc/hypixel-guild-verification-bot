@@ -1,4 +1,5 @@
 const { Events, MessageFlags } = require('discord.js');
+const { permissions } = require('../../config.json');
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -11,6 +12,38 @@ module.exports = {
 			console.error(`No command matching ${interaction.commandName} was found.`);
 			return;
 		}
+		if (permissions.developerMode) {
+			if (interaction.replied || interaction.deferred) {
+				return interaction.followUp({
+					content: '\`❌\` The bot is currently in developer only mode.',
+					flags: MessageFlags.Ephemeral
+				});
+			} else {
+				return interaction.reply({
+					content: '\`❌\` The bot is currently in developer only mode.',
+					flags: MessageFlags.Ephemeral
+				});
+			}
+		}
+
+		if (command.requiredRole) {
+			const requiredRoleID = permissions[command.requiredRole];
+			if (!requiredRoleID) {
+				console.warn(`No role ID set in config.json for ${command.requiredRole}`);
+			} else if (!interaction.member.roles.cache.has(requiredRoleId)) {
+				if (interaction.replied || interaction.deferred) {
+					return interaction.followUp({
+						content: '\`❌\` You do not have permission to use this command.',
+						flags: MessageFlags.Ephemeral
+					});
+				} else {
+					return interaction.reply({
+						content: '\`❌\` You do not have permission to use this command.',
+						flags: MessageFlags.Ephemeral
+					});
+				}
+			}
+		}
 
 		try {
 			await command.execute(interaction);
@@ -18,12 +51,12 @@ module.exports = {
 			console.error(error);
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp({
-					content: 'There was an error while executing this command!',
+					content: '\`❌\` There was an error while executing this command!',
 					flags: MessageFlags.Ephemeral,
 				});
 			} else {
 				await interaction.reply({
-					content: 'There was an error while executing this command!',
+					content: '\`❌\` There was an error while executing this command!',
 					flags: MessageFlags.Ephemeral,
 				});
 			}

@@ -1,0 +1,31 @@
+{
+	"bot": {
+		"token": "DISCORD_TOKEN",
+		"clientId": "CLIENT_ID",
+		"guildId": "DISCORD_SERVER_ID",
+		"hypixelAPIKey": "HYPIXEL_API_KEY"
+	},
+	"guild": {
+		"name": "GUILD_NAME",
+        "unverifiedRole": "UNVERIFIED_ROLE_ID",
+		"verifiedRole": "VERIFIED_ROLE_ID",
+		"guestRole": "GUEST_ROLE_ID",
+		"guildRole": "GUILD_ROLE_ID",
+		"ranks": [
+            {
+                "name": "EXAMPLE_GUILD_RANK",
+                "role": "ROLE_ID"
+            }
+        ]
+	},
+	"permissions": {
+		"devRole": "DEV_ROLE_ID",
+		"moderatorRole": "MOD_ROLE_ID",
+        "developerMode": false
+	},
+	"other": {
+		"emojisInNames": false,
+		"nicknames": false
+	},
+    "logsChannel": "CHANNEL_ID"
+}
