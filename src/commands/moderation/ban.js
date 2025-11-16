@@ -2,10 +2,11 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('update')
-        .setDescription('Update your roles!'),
+        .setName('ban')
+        .setDescription('Ban a user.'),
+    requiredRole: 'devRole',
 
     async execute(interaction) {
-        await interaction.reply('Update Command');
+        await interaction.reply('Ban Command');
     }
 };

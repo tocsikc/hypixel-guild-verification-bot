@@ -13,10 +13,10 @@ module.exports = {
 			return;
 		}
 		if (permissions.developerMode) {
-			const devModeRoleID = permissions.devRole;
-			if (!devModeRoleID) {
-				console.warn(`No role ID set in config.json for ${devModeRoleID}`);
-			} else if (!interaction.member.roles.cache.has(devModeRoleID)) {
+			const devModeRoleId = permissions.devRole;
+			if (!devModeRoleId) {
+				console.warn(`No role ID set in config.json for ${devModeRoleId}`);
+			} else if (!interaction.member.roles.cache.has(devModeRoleId)) {
 				if (interaction.replied || interaction.deferred) {
 					return interaction.followUp({
 						content: '\`❌\` The bot is currently in developer only mode.',
@@ -32,10 +32,11 @@ module.exports = {
 		}
 
 		if (command.requiredRole) {
-			const requiredRoleID = permissions[command.requiredRole];
-			if (!requiredRoleID) {
+			const devRoleId = permissions.devRole;
+			const requiredRoleId = permissions[command.requiredRole] || null;
+			if (!requiredRoleId) {
 				console.warn(`No role ID set in config.json for ${command.requiredRole}`);
-			} else if (!interaction.member.roles.cache.has(requiredRoleId)) {
+			} else if (!interaction.member.roles.cache.has(requiredRoleId) && !interaction.member.roles.cache.has(devRoleId)) {
 				if (interaction.replied || interaction.deferred) {
 					return interaction.followUp({
 						content: '\`❌\` You do not have permission to use this command.',

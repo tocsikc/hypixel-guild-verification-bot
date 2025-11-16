@@ -2,10 +2,11 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('unmute')
-        .setDescription('Unmute a user.'),
+        .setName('mute')
+        .setDescription('Mute a user.'),
+    requiredRole: 'moderatorRole',
 
     async execute(interaction) {
-        await interaction.reply('Unmute Command');
+        await interaction.reply('Mute Command');
     }
 };

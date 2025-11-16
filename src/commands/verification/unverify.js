@@ -1,0 +1,50 @@
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
+
+const { sleep } = require('../../contracts/helperFunctions.js');
+const { removeUser, inDB } = require('../../services/getLinked.js');
+const updateCommand = require("./update.js");
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('unverify')
+        .setDescription('Unlink your account from the guild.'),
+
+    async execute(interaction, extra = {silent: false, discordId: null}) {
+        try {
+            await interaction.deferReply({flags: MessageFlags.Ephemeral});
+            await interaction.editReply({ content: `\`⛓️‍💥\` Attempting to unlink user...` });
+
+            const discordId = extra.discordId ?? interaction.user.id;
+            const discordMember = await interaction.guild.members.fetch(discordId);
+
+            if (inDB(discordId) === false) {
+                return interaction.editReply({
+                    content: `\`❌\` ${discordMember.user} is not linked!\n-# Use /verify to link account.`
+                });
+            }
+            
+            await removeUser(discordId);
+
+            await updateCommand.execute(interaction, {silent: true, uuid: null});
+
+            await sleep(1000);
+
+            const embed = new EmbedBuilder()
+                .setColor("4BB543")
+                .setAuthor({ name: "✅ Account unlinked" })
+                .setDescription(`User <@${discordId}> has been unverified.`)
+
+            await interaction.followUp({ embeds: [embed] });
+
+        } catch (error) {
+            console.log(error);
+                        
+            const errorEmbed = new EmbedBuilder()
+                .setColor(15548997)
+                .setAuthor({ name: "❌ An Error has occurred" })
+                .setDescription(`\`\`\`${error}\`\`\``)
+
+            await interaction.editReply({ embeds: [errorEmbed] });
+        }
+    }
+};
