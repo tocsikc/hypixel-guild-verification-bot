@@ -9,7 +9,12 @@ const commandHandler = require('./src/commandHandler.js');
 const eventHandler = require('./src/eventHandler.js');
 const deployCommands = require('./src/utils/deployCommands.js');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ 
+    intents: [
+        GatewayIntentBits.Guilds, 
+        GatewayIntentBits.GuildMembers,
+    ] 
+});
 
 const filePath = path.join(__dirname, 'config.json');
 

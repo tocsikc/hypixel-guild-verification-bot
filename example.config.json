@@ -16,7 +16,13 @@
                 "name": "EXAMPLE_GUILD_RANK",
                 "role": "ROLE_ID"
             }
-        ]
+        ],
+		"timeRoles": [
+			{
+				"time": 0,
+				"role": "ROLE_ID"
+			}
+		]
 	},
 	"permissions": {
 		"devRole": "DEV_ROLE_ID",

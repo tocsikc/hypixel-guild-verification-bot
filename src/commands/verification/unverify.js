@@ -2,6 +2,8 @@ const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js'
 
 const { sleep } = require('../../contracts/helperFunctions.js');
 const { removeUser, inDB } = require('../../services/getLinked.js');
+const { errorLogger } = require('../../utils/logger.js');
+
 const updateCommand = require("./update.js");
 
 module.exports = {
@@ -25,7 +27,7 @@ module.exports = {
             
             await removeUser(discordId);
 
-            await updateCommand.execute(interaction, {silent: true, uuid: null});
+            await updateCommand.execute(interaction, {silent: true, discordId: discordId, uuid: null});
 
             await sleep(1000);
 
@@ -37,7 +39,7 @@ module.exports = {
             await interaction.followUp({ embeds: [embed] });
 
         } catch (error) {
-            console.log(error);
+            await errorLogger(interaction.client, error);
                         
             const errorEmbed = new EmbedBuilder()
                 .setColor(15548997)

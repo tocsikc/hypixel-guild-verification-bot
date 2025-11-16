@@ -3,7 +3,10 @@ const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js'
 const { sleep } = require('../../contracts/helperFunctions.js');
 const { addUser, inDB } = require('../../services/getLinked.js');
 const { getUuidByUsername } = require('../../services/mojang.js');
+const { errorLogger } = require('../../utils/logger.js');
+
 const updateCommand = require("./update.js");
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -66,16 +69,68 @@ module.exports = {
 
                     await sleep(1000);
 
-                    await interaction.followUp({ embeds: [embed] });
+                    return interaction.followUp({ embeds: [embed] });
                 } catch (error) {
-                    console.log(error);
+                    await errorLogger(interaction.client, error);
 
                     const errorEmbed = new EmbedBuilder()
                         .setColor(15548997)
                         .setAuthor({ name: "❌ An Error has occurred" })
                         .setDescription(`\`\`\`${error}\`\`\``)
 
-                    await interaction.editReply({ embeds: [errorEmbed] });
+                    return interaction.editReply({ embeds: [errorEmbed] });
+                }
+            }
+            case "unverify": {
+                try {
+                    const discord = interaction.options.getUser('discord');
+                    const unverifyCommand = require("./unverify.js");
+
+                    return unverifyCommand.execute(interaction, {discordId: discord.id});
+                } catch (error) {
+                    await errorLogger(interaction.client, error);
+
+                    const errorEmbed = new EmbedBuilder()
+                        .setColor(15548997)
+                        .setAuthor({ name: "❌ An Error has occurred" })
+                        .setDescription(`\`\`\`${error}\`\`\``)
+
+                    return interaction.editReply({ embeds: [errorEmbed] });
+                }
+            }
+            case "update": {
+                try {
+                    const discord = interaction.options.getUser("discord") || null;
+                    if (discord) {
+                        const discordId = discord.id;
+
+                        await updateCommand.execute(interaction, {discordId: discordId});
+                    } else if (!discord) {
+                        return interaction.reply({
+                            content: `\`🛠️\` Work in progress (update everyone)`
+                        });
+                        // const db = await loadDB();
+                        // const results = [];
+
+                        // for (const discordID of Object.keys(db)) {
+                        //     const user = await interaction.guild.members.fetch(discordID).catch(() => null);
+                        //     if (!user) {
+                        //         results.push(`❌ <@${discordID}>: not in discord.`);
+                        //         continue;
+                        //     }
+                        //     const res = await updateCommand.execute(interaction, {silent: true, discordId: discordId, });
+                        //     results.push(res);
+                        // }
+                    }
+                } catch (error) {
+                    await errorLogger(interaction.client, error);
+
+                    const errorEmbed = new EmbedBuilder()
+                        .setColor(15548997)
+                        .setAuthor({ name: "❌ An Error has occurred" })
+                        .setDescription(`\`\`\`${error}\`\`\``)
+
+                    return interaction.editReply({ embeds: [errorEmbed] });
                 }
             }
         }

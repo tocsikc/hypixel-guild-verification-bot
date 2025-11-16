@@ -37,7 +37,15 @@ async function getUuidByUsername(username) {
 }
 
 async function getHeadPNG(username) { // Get players head as an image (username or UUID)
-    return `https://www.mc-heads.net/avatar/${username}/35`
+    
+    if (!username) {
+        return `https://www.mc-heads.net/avatar/`;
+    }
+    const key = `mojang:head:${username.toLowerCase()}`;
+
+    return cache.memo(key, async () => {
+        return `https://www.mc-heads.net/avatar/${username}`;
+    });
 }
 
 

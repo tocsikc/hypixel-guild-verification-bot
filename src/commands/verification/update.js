@@ -5,17 +5,21 @@ const { removeRoles, addRoles, sleep } = require('../../contracts/helperFunction
 const { getUUID, getDiscord, inDB } = require('../../services/getLinked.js');
 const { getUsername } = require('../../services/mojang.js');
 const { getGuildByName } = require('../../services/hypixel.js');
+const { errorLogger } = require('../../utils/logger.js');
 
 async function updateRoles(interaction, discordId, uuid) {
     const ranksArray = config.guild.ranks;
-    const ranks = Object.fromEntries(
-        ranksArray.map(r => [r.name, r.role])
-    );
+    const ranks = Object.fromEntries(ranksArray.map(r => [r.name, r.role]));
     const rankRoles = Object.values(ranks);
+
+    const guildTimeArray = config.guild.timeRoles;
+    const guildTime = [...guildTimeArray].sort((a, b) => a.time - b.time);
+    const timeRoleIds = guildTime.map(t => t.role);
 
     let result;
     let addedRoles = [];
     let removedRoles = [];
+
 
     const discordMember = await interaction.guild.members.fetch(discordId).catch(() => null);
     if (!discordMember) {
@@ -33,6 +37,7 @@ async function updateRoles(interaction, discordId, uuid) {
         return result;
     }
 
+
     const guildData = await getGuildByName(config.guild.name);
 
     if (!guildData || !guildData?.members) throw Error("Guild does not exist. (Please contact an administrator)");
@@ -44,7 +49,7 @@ async function updateRoles(interaction, discordId, uuid) {
     if (!guildMember) {
         removedRoles.push(config.guild.guildRole, ...rankRoles);
         addedRoles.push(config.guild.guestRole);
-        result = `\`🟩\` <@&${config.guild.guestRole}>\n\`🟥\` <@&${config.guild.guildRole}>`;
+        result = `\`🟥\` <@&${config.guild.guildRole}>`;
         
     } else if (guildMember) {
         removedRoles.push(config.guild.guestRole);
@@ -60,8 +65,33 @@ async function updateRoles(interaction, discordId, uuid) {
             }
         }
 
+        const joinTime = guildMember.joined;
+        const now = Date.now();
+        const diff = now - joinTime;
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        let timeRole = null;
+
+        for (const entry of guildTime) {
+            if (days >= entry.time) {
+                timeRole = entry.role;
+            } else {
+                break;
+            }
+        }
+
+        for (const roleId of timeRoleIds) {
+            if (roleId === timeRole) {
+                if (!addedRoles.includes(roleId)) {
+                    addedRoles.push(roleId);
+                }
+            } else {
+                removedRoles.push(roleId);
+            }
+        }
+        const joinTimeSeconds = Math.floor(joinTime / 1000)
         removedRoles = removedRoles.filter(r => r !== guildRankRole);
-        result = `\`🟥\` <@&${config.guild.guestRole}>\n\`🟩\` <@&${config.guild.guildRole}>\nGuild Rank: \`${guildMember.rank}\``;
+        result = `\`🟩\` <@&${config.guild.guildRole}>${timeRole ? `\n\`🟩\` <@&${timeRole}> (<t:${joinTimeSeconds}:R>)` : ''}\nGuild Rank: \`${guildMember.rank}\``;
     }
 
     if (config.other.nicknames) {
@@ -93,6 +123,14 @@ module.exports = {
             }       
 
             const discordId = extra.discordId ?? interaction.user.id;
+            const discordMember = await interaction.guild.members.fetch(discordId).catch(() => null);
+
+            if (discordMember.user.bot) {
+                return interaction.editReply({
+                    content: `🤖 Skipped: \`Bot\``
+                });
+            }
+
             const uuid = (extra.uuid !== undefined)
                 ? extra.uuid
                 : await getUUID(discordId);
@@ -109,7 +147,7 @@ module.exports = {
             }
 
         } catch (error) {
-            console.log(error)
+            await errorLogger(interaction.client, error);
             if (!extra.silent) {
                 const errorEmbed = new EmbedBuilder()
                 .setAuthor({ name: '❌ An Error Occurred' })

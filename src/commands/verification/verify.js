@@ -4,6 +4,7 @@ const { sleep } = require('../../contracts/helperFunctions.js');
 const { addUser, inDB } = require('../../services/getLinked.js');
 const { getUuidByUsername } = require('../../services/mojang.js');
 const { getHypixelPlayer } = require('../../services/hypixel.js');
+const { errorLogger } = require('../../utils/logger.js');
 
 const updateCommand = require("./update.js");
 
@@ -67,7 +68,7 @@ module.exports = {
             
 
         } catch (error) {
-            console.log(error);
+            await errorLogger(interaction.client, error);
 
             const errorEmbed = new EmbedBuilder()
                 .setColor(15548997)
