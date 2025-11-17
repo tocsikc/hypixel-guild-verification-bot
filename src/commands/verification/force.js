@@ -1,11 +1,14 @@
-const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags, Embed } = require('discord.js');
 
 const { sleep } = require('../../contracts/helperFunctions.js');
-const { addUser, inDB } = require('../../services/getLinked.js');
+const { addUser, inDB, getDiscord, getUUID, loadDB } = require('../../services/getLinked.js');
 const { getUuidByUsername } = require('../../services/mojang.js');
 const { errorLogger } = require('../../utils/logger.js');
+const { getGuildByName } = require('../../services/hypixel.js');
 
+const config = require('../../../config.json');
 const updateCommand = require("./update.js");
+const unverifyCommand = require("./unverify.js");
 
 
 module.exports = {
@@ -15,20 +18,20 @@ module.exports = {
         .addSubcommand(subcommand => 
             subcommand
 			    .setName('verify')
-			    .setDescription('Links Minecraft account to Discord.')
+			    .setDescription('Links selected user.')
                 .addUserOption(option => option.setName('discord').setDescription('Discord account').setRequired(true))
                 .addStringOption(option => option.setName('username').setDescription('Minecraft username').setRequired(true)),
         )
         .addSubcommand(subcommand => 
             subcommand
 			    .setName('unverify')
-			    .setDescription('Unlinks Minecraft account from Discord.')
+			    .setDescription('Unlinks selected user.')
                 .addUserOption(option => option.setName('discord').setDescription('Discord account').setRequired(true)),
         )
         .addSubcommand(subcommand => 
             subcommand
 			    .setName('update')
-			    .setDescription('Unlinks Minecraft account from Discord.')
+			    .setDescription('Update selected user\'s roles.')
                 .addUserOption(option => option.setName('discord').setDescription('Discord account')),
         ),
     requiredRole: 'devRole',
@@ -84,7 +87,6 @@ module.exports = {
             case "unverify": {
                 try {
                     const discord = interaction.options.getUser('discord');
-                    const unverifyCommand = require("./unverify.js");
 
                     return unverifyCommand.execute(interaction, {discordId: discord.id});
                 } catch (error) {
@@ -106,21 +108,54 @@ module.exports = {
 
                         await updateCommand.execute(interaction, {discordId: discordId});
                     } else if (!discord) {
-                        return interaction.reply({
-                            content: `\`🛠️\` Work in progress (update everyone)`
-                        });
-                        // const db = await loadDB();
-                        // const results = [];
+                        await interaction.deferReply();
+                        const db = await loadDB();
+                        const membersLength = Object.keys(db).length;
+                        if (membersLength < 1) return interaction.editReply({ content: 'No members to update.', flags: MessageFlags.Ephemeral })
+                        let failedUpdates = 0;
+                        let updatedUsers = 0;
+                        let completed = 0
 
-                        // for (const discordID of Object.keys(db)) {
-                        //     const user = await interaction.guild.members.fetch(discordID).catch(() => null);
-                        //     if (!user) {
-                        //         results.push(`❌ <@${discordID}>: not in discord.`);
-                        //         continue;
-                        //     }
-                        //     const res = await updateCommand.execute(interaction, {silent: true, discordId: discordId, });
-                        //     results.push(res);
-                        // }
+                        const updateEmbed = new EmbedBuilder()
+                            .setAuthor({name: '🛠️ Updating all users'})
+                            .setDescription(`\`🟩\` Updated Users: \`${updatedUsers}\`\n\`🟥\` Failed Updates: \`${
+                                failedUpdates}\`\n\`⚙️\` Users Updated: \`${completed}\`/\`${membersLength}\``)
+                            .setFooter({ text: `Guild Verification Bot • by @tocsikc` })
+                            .setTimestamp()
+
+                        await interaction.editReply({ embeds: [updateEmbed] });
+                        for (const discordId of Object.keys(db)) {
+                            if (completed % 9 === 0) {
+                                const updatingEmbed = new EmbedBuilder()
+                                    .setAuthor({name: '🛠️ Updating all users'})
+                                    .setDescription(`\`🟩\` Updated Users: \`${updatedUsers}\`\n\`🟥\` Failed Updates: \`${
+                                        failedUpdates}\`\n\`⚙️\` Users Updated: \`${completed}\`/\`${membersLength}\``)
+                                    .setFooter({ text: `Guild Verification Bot • by @tocsikc` })
+                                    .setTimestamp()
+                                await interaction.editReply({ embeds: [updatingEmbed] });
+                            }
+                            completed++;
+                            await sleep(120);
+
+                            const user = await interaction.guild.members.fetch(discordId).catch(() => null);
+                            const uuid = await getUUID(discordId);
+                            if (!user || !uuid) {
+                                failedUpdates++;
+                                continue;
+                            }
+                            
+                            await updateCommand.execute(interaction, {silent: true, discordId: discordId, uuid: uuid});
+                            updatedUsers++;
+                        }
+
+                        const updatedEmbed = new EmbedBuilder()
+                            .setAuthor({name: '✅ Updating Complete'})
+                            .setDescription(`Updated \`${membersLength}\` members.\n\`🟩\` Updated Users: \`${updatedUsers}\`\n\`🟥\` Failed Updates: \`${
+                                failedUpdates}\``)
+                            .setFooter({ text: `Guild Verification Bot • by @tocsikc` })
+                            .setTimestamp()
+                        
+                        return interaction.editReply({ embeds: [updatedEmbed] })
                     }
                 } catch (error) {
                     await errorLogger(interaction.client, error);

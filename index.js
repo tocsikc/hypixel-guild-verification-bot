@@ -8,6 +8,7 @@ const { token } = config.bot;
 const commandHandler = require('./src/commandHandler.js');
 const eventHandler = require('./src/eventHandler.js');
 const deployCommands = require('./src/utils/deployCommands.js');
+const autoUpdater = require('./src/utils/autoUpdater.js')
 
 const client = new Client({ 
     intents: [

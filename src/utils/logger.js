@@ -13,9 +13,9 @@ async function getLogChannel(client) {
             return null;
         }
 
-        const channel = await guild.channels.fetch(config.logsChannel).catch(() => null);
+        const channel = await guild.channels.fetch(config.other.logsChannel).catch(() => null);
         if (!channel) {
-            console.warn("[LOGGER] Could not find log channel with ID", config.logsChannel);
+            console.warn("[LOGGER] Could not find log channel with ID", config.other.logsChannel);
             return null;
         }
 
@@ -47,6 +47,10 @@ async function roleUpdateLogger(client, discord, roles) {
     }
 }
 
+async function autoUpdaterLogger(client) {
+
+}
+
 async function errorLogger(client, errorMessage) {
     try {
         const channel = await getLogChannel(client);
@@ -66,4 +70,4 @@ async function errorLogger(client, errorMessage) {
 }
 
 
-module.exports = { roleUpdateLogger, errorLogger }
+module.exports = { roleUpdateLogger, autoUpdaterLogger, errorLogger }

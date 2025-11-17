@@ -65,8 +65,9 @@ module.exports = {
                     value: timeRolesFormatted,
                     inline: true
                 },
-
             )
+            .setFooter({ text: `Guild Verification Bot • by @tocsikc` })
+            .setTimestamp()
 
             await interaction.editReply({ embeds: [embed] });
     }

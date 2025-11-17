@@ -111,7 +111,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('update')
         .setDescription('Update your roles!'),
-
+    updateRoles,
     
     async execute(interaction, extra = {silent: false, discordId: null, uuid: undefined}) {
         try {

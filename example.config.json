@@ -7,13 +7,13 @@
 	},
 	"guild": {
 		"name": "GUILD_NAME",
-        "unverifiedRole": "UNVERIFIED_ROLE_ID",
-		"verifiedRole": "VERIFIED_ROLE_ID",
-		"guestRole": "GUEST_ROLE_ID",
-		"guildRole": "GUILD_ROLE_ID",
+        "unverifiedRole": "ROLE_ID",
+		"verifiedRole": "ROLE_ID",
+		"guestRole": "ROLE_ID",
+		"guildRole": "ROLE_ID",
 		"ranks": [
             {
-                "name": "EXAMPLE_GUILD_RANK",
+                "name": "GUILD_RANK",
                 "role": "ROLE_ID"
             }
         ],
@@ -25,12 +25,14 @@
 		]
 	},
 	"permissions": {
-		"devRole": "DEV_ROLE_ID",
-		"moderatorRole": "MOD_ROLE_ID",
+		"devRole": "ROLE_ID",
+		"moderatorRole": "ROLE_ID",
         "developerMode": false
 	},
 	"other": {
-		"nicknames": false
-	},
-    "logsChannel": "CHANNEL_ID"
+		"nicknames": false,
+		"autoUpdater": true,
+		"autoUpdaterInterval": 12,
+		"logsChannel": "CHANNEL_ID"
+	}
 }
