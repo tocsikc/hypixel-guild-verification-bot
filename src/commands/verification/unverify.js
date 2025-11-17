@@ -13,15 +13,19 @@ module.exports = {
 
     async execute(interaction, extra = {silent: false, discordId: null}) {
         try {
-            await interaction.deferReply({flags: MessageFlags.Ephemeral});
+            await interaction.deferReply();
             await interaction.editReply({ content: `\`⛓️‍💥\` Attempting to unlink user...` });
 
             const discordId = extra.discordId ?? interaction.user.id;
             const discordMember = await interaction.guild.members.fetch(discordId);
 
             if (inDB(discordId) === false) {
-                return interaction.editReply({
-                    content: `\`❌\` ${discordMember.user} is not linked!\n-# Use /verify to link account.`
+                await interaction.editReply({
+                    content: `\`❌\` Something went wrong...`
+                });
+                return interaction.followUp({
+                    content: `\`❌\` ${discordMember.user} is not linked!\n-# Use /verify to link account.`,
+                    flags: MessageFlags.Ephemeral
                 });
             }
             
@@ -29,14 +33,12 @@ module.exports = {
 
             await updateCommand.execute(interaction, {silent: true, discordId: discordId, uuid: null});
 
-            await sleep(1000);
-
             const embed = new EmbedBuilder()
                 .setColor("4BB543")
                 .setAuthor({ name: "✅ Account unlinked" })
                 .setDescription(`User <@${discordId}> has been unverified.`)
 
-            await interaction.followUp({ embeds: [embed] });
+            await interaction.editReply({ embeds: [embed] });
 
         } catch (error) {
             await errorLogger(interaction.client, error);

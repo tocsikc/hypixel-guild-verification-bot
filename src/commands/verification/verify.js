@@ -16,7 +16,7 @@ module.exports = {
 
     async execute(interaction, extra = {silent: false, discordId: null}) {
         try {
-            await interaction.deferReply({flags: MessageFlags.Ephemeral});
+            await interaction.deferReply();
             await interaction.editReply({
                 content: `\`🔗\` Attempting to link user...`
             });
@@ -30,26 +30,41 @@ module.exports = {
             const nickname = player.displayname;
 
             if (await inDB(discordId, uuid) === 'discord') {
-                return interaction.editReply({
-                    content: '\`❌\` You are already linked. \n-# Use /unverify to unlink account.'
+                await interaction.editReply({
+                    content: `\`❌\` Something went wrong...`
+                });
+                return interaction.followUp({
+                    content: '\`❌\` You are already linked. \n-# Use /unverify to unlink account.',
+                    flags: MessageFlags.Ephemeral
                 });
             } else if (await inDB(discordId, uuid) === 'minecraft') {
-                return interaction.editReply({
-                    content: `\`❌\` \`${nickname}\` is linked to another Discord account.`
+                await interaction.editReply({
+                    content: `\`❌\` Something went wrong...`
+                });
+                return interaction.followUp({
+                    content: `\`❌\` \`${nickname}\` is linked to another Discord account.`,
+                    flags: MessageFlags.Ephemeral
                 });
             }
 
             const linkedDiscord = player?.socialMedia?.links?.DISCORD?.toLowerCase()
             if (!linkedDiscord) {
-                return interaction.editReply({
+                await interaction.editReply({
+                    content: `\`❌\` Something went wrong...`
+                });
+                return interaction.followUp({
                     content: `\`❌\` \`${nickname}\` does not have a Discord linked.`,
                     flags: MessageFlags.Ephemeral
                 });
             }
 
             if (linkedDiscord !== discordMember.user.username) {
-                return interaction.editReply({
-                    content: `\`❌\` \`${nickname}\` has been linked to a different Discord account (\`${linkedDiscord}\`).`
+                await interaction.editReply({
+                    content: `\`❌\` Something went wrong...`
+                });
+                return interaction.followUp({
+                    content: `\`❌\` \`${nickname}\` has been linked to a different Discord account (\`${linkedDiscord}\`).`,
+                    flags: MessageFlags.Ephemeral
                 });
             }
 
@@ -62,9 +77,7 @@ module.exports = {
 
             await updateCommand.execute(interaction, {silent: true, discordId: discordId, uuid: uuid});
 
-            await sleep(1000);
-
-            await interaction.followUp({ embeds: [embed] });
+            await interaction.editReply({ embeds: [embed] });
             
 
         } catch (error) {

@@ -27,7 +27,7 @@ async function updateRoles(interaction, discordId, uuid) {
     }
 
     if (!uuid) {
-        removedRoles.push(config.guild.guestRole, config.guild.guildRole, config.guild.verifiedRole, ...rankRoles);
+        removedRoles.push(config.guild.guestRole, config.guild.guildRole, config.guild.verifiedRole, ...rankRoles, ...timeRoleIds);
         addedRoles.push(config.guild.unverifiedRole);
 
         await removeRoles(discordMember, removedRoles);
@@ -47,7 +47,7 @@ async function updateRoles(interaction, discordId, uuid) {
     const guildMember = guildMembers.find(m => m.uuid === strippedUUID);
 
     if (!guildMember) {
-        removedRoles.push(config.guild.guildRole, ...rankRoles);
+        removedRoles.push(config.guild.guildRole, ...rankRoles, ...timeRoleIds);
         addedRoles.push(config.guild.guestRole);
         result = `\`🟥\` <@&${config.guild.guildRole}>`;
         
@@ -116,7 +116,7 @@ module.exports = {
     async execute(interaction, extra = {silent: false, discordId: null, uuid: undefined}) {
         try {
             if (!extra.silent) {
-                await interaction.deferReply({flags: MessageFlags.Ephemeral});
+                await interaction.deferReply();
                 await interaction.editReply({
                     content: `\`🛠️\` Updating roles...`
                 });
@@ -140,10 +140,10 @@ module.exports = {
             if (!extra.silent) {
                 const successEmbed = new EmbedBuilder()
                 .setAuthor({ name: ' ✅ Roles Updated'})
-                .setDescription(`Updating roles for <@${discordId}> (\`${await getUsername(uuid)}\`)\n${resultText}`)
+                .setDescription(`Updated roles for <@${discordId}> (\`${await getUsername(uuid)}\`)\n${resultText}`)
                 .setColor('#13e436')
 
-                await interaction.followUp({ embeds: [successEmbed]});
+                await interaction.editReply({ embeds: [successEmbed]});
             }
 
         } catch (error) {
@@ -158,7 +158,7 @@ module.exports = {
                     content: `\`❌\` Something went wrong...`
                 });
 
-                await interaction.followUp({ embeds: [errorEmbed]});
+                await interaction.editReply({ embeds: [errorEmbed]});
             }
         }
     }

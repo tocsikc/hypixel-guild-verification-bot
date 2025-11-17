@@ -10,7 +10,7 @@ module.exports = {
         .addUserOption((option) => option.setName('discord').setDescription('The Discord account to lookup.').setRequired(false)),
 
     async execute(interaction) {
-        await interaction.deferReply({flags: MessageFlags.Ephemeral});
+        await interaction.deferReply();
         await interaction.editReply({
                 content: `\`📌\` Finding user...`
         });
@@ -23,7 +23,7 @@ module.exports = {
                 .setAuthor({ name: "❌ Not found" })
                 .setDescription(`<@${discord.id}> is not linked!`)
                 .setFooter({text: 'Use /verify to link account.'})
-            return interaction.followUp({
+            return interaction.editReply({
                 embeds: [embed]
             });
         }
@@ -36,6 +36,6 @@ module.exports = {
             .setAuthor({ name: "✅ User Found" })
             .setDescription(`<@${discord.id}> is linked to \`${username}\``)
 
-        return interaction.followUp({ embeds: [successEmbed] });
+        return interaction.editReply({ embeds: [successEmbed] });
     }
 };

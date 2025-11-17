@@ -16,8 +16,8 @@ module.exports = {
             subcommand
 			    .setName('verify')
 			    .setDescription('Links Minecraft account to Discord.')
-                .addStringOption(option => option.setName('username').setDescription('Minecraft username').setRequired(true))
-                .addUserOption(option => option.setName('discord').setDescription('Discord account').setRequired(true)),
+                .addUserOption(option => option.setName('discord').setDescription('Discord account').setRequired(true))
+                .addStringOption(option => option.setName('username').setDescription('Minecraft username').setRequired(true)),
         )
         .addSubcommand(subcommand => 
             subcommand
@@ -37,7 +37,7 @@ module.exports = {
         switch (interaction.options.getSubcommand()) {
             case "verify": {
                 try {
-                    await interaction.deferReply({flags: MessageFlags.Ephemeral});
+                    await interaction.deferReply();
                     await interaction.editReply({
                         content: `\`🔗\` Attempting to link user...`
                     });
@@ -49,12 +49,14 @@ module.exports = {
                     const uuid = await getUuidByUsername(username);
 
                     if (await inDB(discordId, uuid) === 'discord') {
-                        return interaction.editReply({
-                            content: '\`❌\` This account is already linked. \n-# Use /force unverify to unlink account.'
+                        return interaction.followUp({
+                            content: '\`❌\` This account is already linked. \n-# Use /force unverify to unlink account.',
+                            flags: MessageFlags.Ephemeral
                         });
                     } else if (await inDB(discordId, uuid) === 'minecraft') {
-                        return interaction.editReply({
-                            content: `\`❌\` \`${username}\` is linked to another Discord account.`
+                        return interaction.followUp({
+                            content: `\`❌\` \`${username}\` is linked to another Discord account.`,
+                            flags: MessageFlags.Ephemeral
                         });
                     }
 
@@ -67,9 +69,7 @@ module.exports = {
 
                     await updateCommand.execute(interaction, {silent: true, discordId: discordId, uuid: uuid});
 
-                    await sleep(1000);
-
-                    return interaction.followUp({ embeds: [embed] });
+                    return interaction.editReply({ embeds: [embed] });
                 } catch (error) {
                     await errorLogger(interaction.client, error);
 

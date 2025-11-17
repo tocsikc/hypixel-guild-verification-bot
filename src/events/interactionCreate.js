@@ -13,7 +13,7 @@ module.exports = {
 			return;
 		}
 		if (permissions.developerMode) {
-			const devModeRoleId = permissions.devRole;
+			const devModeRoleId = permissions.moderatorRole;
 			if (!devModeRoleId) {
 				console.warn(`No role ID set in config.json for ${devModeRoleId}`);
 			} else if (!interaction.member.roles.cache.has(devModeRoleId)) {

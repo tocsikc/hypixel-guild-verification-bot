@@ -30,7 +30,6 @@
         "developerMode": false
 	},
 	"other": {
-		"emojisInNames": false,
 		"nicknames": false
 	},
     "logsChannel": "CHANNEL_ID"
