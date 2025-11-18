@@ -6,6 +6,6 @@ module.exports = {
         .setDescription('Set a nickname.'),
 
     async execute(interaction) {
-        await interaction.reply('Nickname Command');
+        await interaction.reply('Nickname Command (Coming soon)');
     }
 };

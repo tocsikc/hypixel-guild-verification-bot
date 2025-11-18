@@ -47,7 +47,7 @@ async function autoUpdater(client) {
     if (!config.other.autoUpdater) return;
     const interval = (!config.other.autoUpdaterInterval || config.other.autoUpdaterInterval <= 1) ? 12 : config.other.autoUpdaterInterval;
     console.log(`🟩 AutoUpdater Ready: Updating every ${interval} hour${interval === 1 ? "" : "s"}.`)
-    cron.schedule(`* */${interval} * * *`, async () => {
+    cron.schedule(`0 */${interval} * * *`, async () => {
         try {
             await updateMembers(client);
         } catch (error) {
