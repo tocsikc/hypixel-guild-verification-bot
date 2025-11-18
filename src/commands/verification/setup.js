@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, MessageFlags, Embed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags } = require('discord.js');
+const config = require('../../../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,13 +9,12 @@ module.exports = {
     requiredRole: 'devRole',
 
     async execute(interaction) {
-        return interaction.reply('no')
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const channel = interaction.options.getChannel('channel');
 
         const verifyButton = new ButtonBuilder()
-			.setCustomId('link_button')
+			.setCustomId('verify_button')
 			.setLabel('✅ Verify')
 			.setStyle(ButtonStyle.Success);
 
@@ -23,6 +23,25 @@ module.exports = {
 
         const verifyEmbed = new EmbedBuilder()
             .setColor('5865F2')
-            .setDescription(`### 🔐 Verification`)
+            .setDescription(`### 🔐 Verification\nWelcome to **${config.guild.name}**!`)
+            .addFields({
+                name: 'Verification Process',
+                value: '- Click The `Verify` button.\n- Enter your **Minecraft username**.\n- Check under this embed to see if you were verified.'
+            })
+            .addFields({
+                name: 'IMPORTANT!',
+                value: '- We will **NOT** ask for your **Minecraft email**.\n- You must have your Discord linked on Hypixel socials.\n- Check Below for help!'
+            })
+            .setImage('https://cdn.discordapp.com/attachments/1438936349540487168/1440411696639512586/8mb.video-N9F-goe91F0m.gif?ex=691e0f6e&is=691cbdee&hm=244f90322c580970da6b6d8f235378e80800248b9339ea7041165ed08b139725&')
+            
+        await channel.send({
+            embeds: [verifyEmbed],
+            components: [actionRow]
+        });
+
+        await interaction.editReply({
+            content: `\`➡️\` Sending message... (${channel})`,
+            flags: MessageFlags.Ephemeral
+        });
     }
 };

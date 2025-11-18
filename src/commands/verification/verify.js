@@ -14,7 +14,7 @@ module.exports = {
         .setDescription('Link your account to the guild!')
         .addStringOption((option) => option.setName('username').setDescription('Your Minecraft username.').setRequired(true)),
 
-    async execute(interaction, extra = {silent: false, discordId: null}) {
+    async execute(interaction, extra = {silent: false, discordId: null, username: undefined}) {
         try {
             if (!extra.silent) {
                 await interaction.deferReply();
@@ -27,7 +27,7 @@ module.exports = {
             const discordId = extra.discordId ?? interaction.user.id;
             const discordMember = await interaction.guild.members.fetch(discordId);
             
-            const username = interaction.options.getString("username");
+            const username = extra.username ? extra.username : interaction.options.getString("username"); 
             const uuid = await getUuidByUsername(username);
             const player = await getHypixelPlayer(uuid);
             const nickname = player.displayname;
@@ -43,7 +43,7 @@ module.exports = {
                         flags: MessageFlags.Ephemeral
                     });
                 } else {
-                    return result;
+                    return [result];
                 }
             } else if (await inDB(discordId, uuid) === 'minecraft') {
                 result = `\`❌\` \`${nickname}\` is linked to another Discord account.`
@@ -56,7 +56,7 @@ module.exports = {
                         flags: MessageFlags.Ephemeral
                     });
                 } else {
-                    return result;
+                    return [result];
                 }
             }
 
@@ -73,7 +73,7 @@ module.exports = {
                         flags: MessageFlags.Ephemeral
                     });
                 } else {
-                    return result;
+                    return [result];
                 }
             }
 
@@ -88,7 +88,7 @@ module.exports = {
                         flags: MessageFlags.Ephemeral
                     });
                 } else {
-                    return result;
+                    return [result];
                 }
             }
 
@@ -104,7 +104,7 @@ module.exports = {
             if (!extra.silent) {
                 await interaction.editReply({ embeds: [embed] });
             } else {
-                return embed, {embed: true};
+                return [embed, {embed: true}];
             }
 
         } catch (error) {
@@ -118,7 +118,7 @@ module.exports = {
             if (!extra.silent) {
                 await interaction.editReply({ embeds: [errorEmbed] });
             } else {
-                return errorEmbed, {embed: true};
+                return [errorEmbed, {embeds: true}];
             }
         }
     }   

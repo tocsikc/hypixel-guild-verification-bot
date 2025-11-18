@@ -39,7 +39,7 @@ module.exports = {
             .addFields(
                 {
                     name: 'Discord Information',
-                    value: `Members Linked: \`${membersLinked}\`/\`${members}\`\nLogging Channel: ${config.logsChannel ? `<#${config.logsChannel}>` : '\`None\` '}\nDeveloper Role: ${
+                    value: `Members Linked: \`${membersLinked}\`/\`${members}\`\nLogging Channel: ${config.other.logsChannel ? `<#${config.other.logsChannel}>` : '\`None\` '}\nDeveloper Role: ${
                         config.permissions.devRole ? `<@&${config.permissions.devRole}>` : '\`None\`'}\nModerator Role: ${
                         config.permissions.moderatorRole ? `<@&${config.permissions.moderatorRole}>` : '\`None\`'}\nDeveloper Mode: \`${
                         config.permissions.developerMode ? '\`enabled\`' : '\`disabled\`'}\`\nNicknames: \`${

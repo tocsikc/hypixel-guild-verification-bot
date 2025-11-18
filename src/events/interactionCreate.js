@@ -1,5 +1,6 @@
-const { Events, MessageFlags } = require('discord.js');
+const { Events, MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const { permissions } = require('../../config.json');
+const verify = require('../commands/verification/verify.js');
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -68,7 +69,46 @@ module.exports = {
 				}
 			}
 		} else if (interaction.isButton()) {
-			return;
+			const id = interaction.customId;
+
+			if (id === 'verify_button') {
+				const verifyModal = new ModalBuilder()
+					.setCustomId('verifyModal')
+					.setTitle('Verify your account');
+
+				const usernameInput = new TextInputBuilder()
+					.setCustomId('usernameInput')
+					.setLabel('What\'s your Minecraft username?')
+					.setPlaceholder('Steve')
+					.setStyle(TextInputStyle.Short)
+					.setRequired(true);
+
+				const verifyActionRow = new ActionRowBuilder().addComponents(usernameInput);
+
+				verifyModal.addComponents(verifyActionRow);
+
+				await interaction.showModal(verifyModal);
+			}
+		} else if (interaction.isModalSubmit()) {
+			if (interaction.customId === 'verifyModal') {
+				await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+				const username = interaction.fields.getTextInputValue('usernameInput');
+				const result = await verify.execute(interaction, { silent: true, username: username });
+
+				if (result) {
+					if (result[1]?.embed === true) {
+						await interaction.editReply({
+							embeds: [result[0]],
+							flags: MessageFlags.Ephemeral
+						});
+					} else {
+						await interaction.editReply({
+							content: result[0],
+							flags: MessageFlags.Ephemeral
+						});
+					}
+				}
+			}
 		}
 
 	},
