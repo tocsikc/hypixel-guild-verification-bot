@@ -7,21 +7,27 @@ const { getUsername } = require('../../services/mojang.js');
 const { getGuildByName } = require('../../services/hypixel.js');
 const { errorLogger } = require('../../utils/logger.js');
 
-async function updateRoles(interaction, discordId, uuid) {
-    const ranksArray = config.guild.ranks;
-    const ranks = Object.fromEntries(ranksArray.map(r => [r.name, r.role]));
-    const rankRoles = Object.values(ranks);
+const ranksArray = config.guild.ranks;
+const ranks = Object.fromEntries(ranksArray.map(r => [r.name, r.role]));
+const rankRoles = Object.values(ranks);
 
-    const guildTimeArray = config.guild.timeRoles;
-    const guildTime = [...guildTimeArray].sort((a, b) => a.time - b.time);
-    const timeRoleIds = guildTime.map(t => t.role);
+const guildTimeArray = config.guild.timeRoles;
+const guildTime = [...guildTimeArray].sort((a, b) => a.time - b.time);
+const timeRoleIds = guildTime.map(t => t.role);
+const guildId = config.bot.guildId;
+
+async function updateRoles(client, discordId, uuid) {
 
     let result;
     let addedRoles = [];
     let removedRoles = [];
 
+    const guild = await client.guilds.fetch(guildId).catch(() => null);
+    if (!guild) {
+        throw Error(`Guild ${guildId} not found.`);
+    }
 
-    const discordMember = await interaction.guild.members.fetch(discordId).catch(() => null);
+    const discordMember = await guild.members.fetch(discordId).catch(() => null);
     if (!discordMember) {
         throw Error("User not in Discord.");
     }
@@ -135,7 +141,7 @@ module.exports = {
                 ? extra.uuid
                 : await getUUID(discordId);
 
-            const resultText = await updateRoles(interaction, discordId, uuid)
+            const resultText = await updateRoles(interaction.client, discordId, uuid)
 
             if (!extra.silent) {
                 const successEmbed = new EmbedBuilder()

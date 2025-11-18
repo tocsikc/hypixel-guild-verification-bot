@@ -8,7 +8,6 @@ const { token } = config.bot;
 const commandHandler = require('./src/commandHandler.js');
 const eventHandler = require('./src/eventHandler.js');
 const deployCommands = require('./src/utils/deployCommands.js');
-const autoUpdater = require('./src/utils/autoUpdater.js')
 
 const client = new Client({ 
     intents: [
@@ -20,7 +19,7 @@ const client = new Client({
 const filePath = path.join(__dirname, 'config.json');
 
 if (!fs.existsSync(filePath)) {
-    console.warn('[ERROR] "config.json" does not exist! Please create a config file.');
+    console.warn('[WARNING] "config.json" does not exist! Please create a config file.');
     process.exit(0)
 }
 

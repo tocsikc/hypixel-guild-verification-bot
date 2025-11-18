@@ -6,7 +6,7 @@ const { getUuidByUsername } = require('../../services/mojang.js');
 const { getHypixelPlayer } = require('../../services/hypixel.js');
 const { errorLogger } = require('../../utils/logger.js');
 
-const updateCommand = require("./update.js");
+const { updateRoles } = require("./update.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -75,7 +75,7 @@ module.exports = {
                 .setAuthor({ name: "✅ Account linked" })
                 .setDescription(`User <@${discordId}> (\`${nickname}\`) has been verified.`)
 
-            await updateCommand.execute(interaction, {silent: true, discordId: discordId, uuid: uuid});
+            await updateRoles(interaction.client, discordId, uuid);
 
             await interaction.editReply({ embeds: [embed] });
             

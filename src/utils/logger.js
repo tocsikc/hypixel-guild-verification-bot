@@ -1,9 +1,9 @@
 const { EmbedBuilder } = require('discord.js')
+const config = require("../../config.json");
 
 const { getUUID } = require('../services/getLinked.js');
 const { getHeadPNG } = require('../services/mojang.js');
 
-const config = require("../../config.json");
 
 async function getLogChannel(client) {
     try {
@@ -47,8 +47,35 @@ async function roleUpdateLogger(client, discord, roles) {
     }
 }
 
-async function autoUpdaterLogger(client) {
+async function autoUpdateLogger(client, membersLength, updatedUsers=null, failedUsers=null) {
+    try {
 
+        const channel = await getLogChannel(client);
+        if (!channel) return;
+
+        if (!updatedUsers && !failedUsers) {
+            const preUpdateEmbed = new EmbedBuilder()
+                .setAuthor({name: '🚨 Logger → 🤖 Auto Updater'})
+                .setDescription(`Starting updates on \`${membersLength}\` members.`)
+                .setColor('#ddad0e')
+                .setFooter({ text: `Guild Verification Bot • by @tocsikc` })
+                .setTimestamp()
+            
+            return channel.send({ embeds: [preUpdateEmbed] });
+        }
+
+        const autoUpdateEmbed = new EmbedBuilder()
+            .setAuthor({name: '🚨 Logger → 🤖 Auto Updater'})
+            .setDescription(`Updated \`${membersLength}\` members.\n\`🟩\` Updated Users: \`${updatedUsers}\`\n\`🟥\` Failed Updates: \`${
+                failedUsers}\``)
+            .setColor('#0edd53')
+            .setFooter({ text: `Guild Verification Bot • by @tocsikc` })
+            .setTimestamp()
+
+        await channel.send({ embeds: [autoUpdateEmbed] });  
+    } catch (error) {
+        console.error("[LOGGER] Logging error in autoUpdateLogger:", error);
+    }
 }
 
 async function errorLogger(client, errorMessage) {
@@ -70,4 +97,4 @@ async function errorLogger(client, errorMessage) {
 }
 
 
-module.exports = { roleUpdateLogger, autoUpdaterLogger, errorLogger }
+module.exports = { getLogChannel, roleUpdateLogger, autoUpdateLogger, errorLogger }
