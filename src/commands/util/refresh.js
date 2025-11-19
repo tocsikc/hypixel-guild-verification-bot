@@ -3,8 +3,8 @@ const { requiredRole } = require('../verification/setup');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('restart')
-        .setDescription('Restarts the bot!'),
+        .setName('refresh')
+        .setDescription('Restarts the bot.'),
         requiredRole: 'devRole',
 
     async execute(interaction) {
