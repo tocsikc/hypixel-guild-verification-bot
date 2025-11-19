@@ -118,7 +118,7 @@ module.exports = {
             if (!extra.silent) {
                 await interaction.editReply({ embeds: [errorEmbed] });
             } else {
-                return [errorEmbed, {embeds: true}];
+                return [errorEmbed, {embed: true}];
             }
         }
     }   

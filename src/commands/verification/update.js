@@ -1,11 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const config = require('../../../config.json');
 
-const { removeRoles, addRoles, sleep } = require('../../contracts/helperFunctions.js')
+const { setDiscordNickname, removeRoles, addRoles, sleep } = require('../../contracts/helperFunctions.js')
 const { getUUID, getDiscord, inDB } = require('../../services/getLinked.js');
 const { getUsername } = require('../../services/mojang.js');
 const { getGuildByName } = require('../../services/hypixel.js');
 const { errorLogger } = require('../../utils/logger.js');
+const { getNickname } = require('../../services/getNicknames.js');
 
 const ranksArray = config.guild.ranks;
 const ranks = Object.fromEntries(ranksArray.map(r => [r.name, r.role]));
@@ -101,8 +102,8 @@ async function updateRoles(client, discordId, uuid) {
     }
 
     if (config.other.nicknames) {
-        const username = await getUsername(uuid);
-        await discordMember.setNickname(username);
+        const discordNickname = await getNickname(discordId) ?? await getUsername(uuid);
+        await setDiscordNickname(discordMember, discordNickname);
     }
 
     removedRoles.push(config.guild.unverifiedRole);

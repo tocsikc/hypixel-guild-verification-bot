@@ -3,18 +3,26 @@ const path = require('path');
 
 const filePath = path.join(__dirname, '../../data/linked.json');
 
-async function loadDB() { // Open linked.json
-  try {
-    const data = await fs.readFile(filePath, 'utf8');
-    return data ? JSON.parse(data) : {};
-  } catch (err) {
-    if (err.code === 'ENOENT') return {};
-    throw err;
-  }
+async function loadDB() {
+    try {
+        const data = await fs.readFile(filePath, 'utf8');
+        return data ? JSON.parse(data) : {};
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            const dir = path.dirname(filePath);
+            await fs.mkdir(dir, { recursive: true });
+
+            await saveDB({});
+
+            return {};
+        } else {
+            throw err;
+        }
+    }
 }
 
 async function saveDB(db) { // Save and close linked.json
-    await fs.writeFile(filePath, JSON.stringify(db, null, 2), 'utf8');
+    await fs.writeFile(filePath, JSON.stringify(db, null, 4), 'utf8');
 }
 
 async function addUser(discordID, uuid) { // Add user to database
