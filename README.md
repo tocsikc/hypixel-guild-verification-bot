@@ -1,14 +1,16 @@
 # Hypixel Guild Verification Bot
 Simple and easy to use Hypixel Guild Bot for verification and automatic role updating.
 ## Features
-- Discord --> Hypixel Verification System
-- Caches Hypixel/Mojang API Data
+- Discord --> Hypixel Verification System.
+- Manage verification easily with staff commands to modify users.
+- Caches Hypixel/Mojang API Data for efficient use.
 ## Contents
 - [Setup](#setup)
 - [Config](#config)
 - [Commands](#commands)
 - [To-do](#to-do)
 ## Setup
+Coming Soon
 ## Config
 Use `example.config.json` for reference.
 ### Bot
@@ -42,11 +44,13 @@ Use `example.config.json` for reference.
 ### Other
 `nicknames` Boolean, when `true` changes user's Discord nickname to Minecraft username.
 
-`autoUpdater` Boolean, when `true` updates all roles every `autoUpdaterInterval` hours
+`nickPermsRoles` Array, if roles are given user must have one of the roles to use command.
+
+`autoUpdater` Boolean, when `true` updates all roles every `autoUpdaterInterval` hours.
 
 `autoUpdaterInterval` Number, changes how often `autoUpdater` triggers. (default: 12)
 
-`logsChannel` Channel ID, Logs all role updates and errors to chosen channel
+`logsChannel` Channel ID, Logs all role updates and errors to selected channel.
 ## Commands
 `< >` = Required arguments, `[ ]` = Optional arguments
 ### Verification
@@ -63,9 +67,12 @@ Use `example.config.json` for reference.
 `force update` [discord]
 
 `force unverify` <discord>
+
+`setup` <channel>
 ### Utility
 `info`
+
+### Other
+`nick` [nickname]
 ## To-do
-- Moderation Commands
-- /nick command
-- Finish Auto Updater
+- Nothing
