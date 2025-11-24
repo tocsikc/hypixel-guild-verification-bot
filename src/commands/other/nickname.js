@@ -57,8 +57,14 @@ module.exports = {
 
         const uuid = await getUUID(interaction.user.id);
         await updateRoles(interaction.client, interaction.user.id, uuid);
+        if (!nickname) {
+            return interaction.editReply({
+                content:`\`✅\` Successfully removed your nickname.`,
+                flags: MessageFlags.Ephemeral
+            });  
+        }
         return interaction.editReply({
-            content:`\`✅\` Successfully updated your nickname to \`${nickname}\``,
+            content:`\`✅\` Successfully updated your nickname to \`${nickname}\`.`,
             flags: MessageFlags.Ephemeral
         });
     }   
