@@ -182,11 +182,23 @@ module.exports = {
                 const discordId = discord.id;
 
                 if (!nickname) {
+                    const resetEmbed = new EmbedBuilder()
+                        .setColor("4BB543")
+                        .setAuthor({ name: "✅ Nickname Reset" })
+                        .setDescription(`<@${discordId}>'s nickname has been removed.`);
+                    
                     await removeNick(discordId);
-                    return updateCommand.execute(interaction, {discordId: discordId});
+                    await updateCommand.execute(interaction, {silent: true, discordId: discordId});
+                    return interaction.reply({ embeds: [resetEmbed]})
                 }
+                const embed = new EmbedBuilder()
+                    .setColor("4BB543")
+                    .setAuthor({ name: "✅ Nickname Set" })
+                    .setDescription(`<@${discordId}>'s nickname has been set to ${nickname}.`);
+
                 await addNick(discordId, nickname);
-                return updateCommand.execute(interaction, {discordId: discordId});
+                await updateCommand.execute(interaction, {silent: true, discordId: discordId});
+                return interaction.reply({ embeds: [resetEmbed]})
             }
         }
     }
