@@ -78,6 +78,36 @@ async function autoUpdateLogger(client, membersLength, updatedUsers=null, failed
     }
 }
 
+async function nicknameLogger(client, discordId, nickname=null) {
+    try {
+
+        const channel = await getLogChannel(client);
+        if (!channel) return;
+
+        const noNickEmbed = new EmbedBuilder()
+            .setAuthor({ name: '🚨 Logger → 📝 Nickname Changes'})
+            .setDescription(`**<@${discordId}>'s nickname has been removed.`)
+            .setColor('#c9780fff')
+            .setFooter({text: `Guild Verification Bot • by @tocsikc`})
+            .setTimestamp();
+
+        const nickEmbed = new EmbedBuilder()
+            .setAuthor({ name: '🚨 Logger → 📝 Nickname Changes'})
+            .setDescription(`**<@${discordId}>'s nickname has been updated: ${nickname}.`)
+            .setColor('#c9780fff')
+            .setFooter({text: `Guild Verification Bot • by @tocsikc`})
+            .setTimestamp();
+        
+        if (!nickname) {
+            return channel.send({ embeds: [noNickEmbed] });
+        }
+        return channel.send({ embeds: [nickEmbed] });
+
+    } catch (error) {
+        console.error("[LOGGER] Logging error in nicknameLogger:", error);
+    }
+}
+
 async function errorLogger(client, errorMessage) {
     try {
         const channel = await getLogChannel(client);
@@ -97,4 +127,4 @@ async function errorLogger(client, errorMessage) {
 }
 
 
-module.exports = { getLogChannel, roleUpdateLogger, autoUpdateLogger, errorLogger }
+module.exports = { getLogChannel, roleUpdateLogger, autoUpdateLogger, nicknameLogger, errorLogger }

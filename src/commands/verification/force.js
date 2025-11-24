@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder, MessageFlags, Embed } = require('disc
 const { sleep } = require('../../contracts/helperFunctions.js');
 const { addUser, inDB, getDiscord, getUUID, loadDB } = require('../../services/getLinked.js');
 const { getUuidByUsername } = require('../../services/mojang.js');
-const { errorLogger } = require('../../utils/logger.js');
+const { errorLogger, nicknameLogger } = require('../../utils/logger.js');
 const { getGuildByName } = require('../../services/hypixel.js');
 const { addNick, removeNick } = require('../../services/getNicknames');
 
@@ -197,6 +197,8 @@ module.exports = {
                     .setDescription(`<@${discordId}>'s nickname has been set to ${nickname}.`);
 
                 await addNick(discordId, nickname);
+                await nicknameLogger(interaction.client, discordId, nickname);
+                
                 await updateCommand.execute(interaction, {silent: true, discordId: discordId});
                 return interaction.reply({ embeds: [embed]})
             }

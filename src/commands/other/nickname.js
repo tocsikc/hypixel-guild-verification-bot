@@ -4,6 +4,7 @@ const config = require('../../../config.json');
 const { addNick, removeNick, getNickname } = require('../../services/getNicknames');
 const { getUUID } = require('../../services/getLinked');
 const { updateRoles } = require("../verification/update.js");
+const { nicknameLogger } = require('../../utils/logger.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -55,6 +56,8 @@ module.exports = {
             await addNick(interaction.user.id, nickname);
         }
 
+        await nicknameLogger(interaction.client, discordId, nickname);
+        
         const uuid = await getUUID(interaction.user.id);
         await updateRoles(interaction.client, interaction.user.id, uuid);
         if (!nickname) {
