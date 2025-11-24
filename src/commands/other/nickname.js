@@ -34,7 +34,7 @@ module.exports = {
             if (!nickRoles.some(roleId => interaction.member.roles.cache.has(roleId)) ) {
                 const nickRolesFormatted = Array.isArray(nickRoles) ? nickRoles.map(role => `<@&${role}>`).join('\n'): nickRoles ;
                 return interaction.editReply({
-                    content:`\`❌\` You don\'t have permission to do that. (${nickRolesFormatted} required)`,
+                    content:`\`❌\` You don\'t have permission to do that.\nRequires one of the following:\n${nickRolesFormatted}`,
                     flags: MessageFlags.Ephemeral
                 });
             }
