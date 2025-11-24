@@ -5,6 +5,7 @@ const { addUser, inDB, getDiscord, getUUID, loadDB } = require('../../services/g
 const { getUuidByUsername } = require('../../services/mojang.js');
 const { errorLogger } = require('../../utils/logger.js');
 const { getGuildByName } = require('../../services/hypixel.js');
+const { addNick, removeNick } = require('../../services/getNicknames');
 
 const config = require('../../../config.json');
 const updateCommand = require("./update.js");
@@ -33,6 +34,13 @@ module.exports = {
 			    .setName('update')
 			    .setDescription('Update selected user\'s roles.')
                 .addUserOption(option => option.setName('discord').setDescription('Discord account')),
+        )
+        .addSubcommand(subcommand => 
+            subcommand
+			    .setName('nick')
+			    .setDescription('Changes user\'s nick.')
+                .addUserOption(option => option.setName('discord').setDescription('Discord account').setRequired(true))
+                .addStringOption(option => option.setName('nickname').setDescription('Nickname (Empty to reset)')),
         ),
     requiredRole: 'devRole',
 
@@ -167,6 +175,18 @@ module.exports = {
 
                     return interaction.editReply({ embeds: [errorEmbed] });
                 }
+            }
+            case "nick": {
+                const discord = interaction.options.getUser("discord");
+                const nickname = interaction.options.getString("nickname");
+                const discordId = discord.id;
+
+                if (!nickname) {
+                    await removeNick(discordId);
+                    return updateCommand.execute(interaction, {discordId: discordId});
+                }
+                await addNick(discordId, nickname);
+                return updateCommand.execute(interaction, {discordId: discordId});
             }
         }
     }

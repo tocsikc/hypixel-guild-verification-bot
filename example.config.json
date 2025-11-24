@@ -32,6 +32,7 @@
 	"other": {
 		"nicknames": false,
 		"nickPermsRoles": ["ROLE_ID", "Leave array empty for no permission check [] "],
+		"nickBlacklistRole": "ROLE_ID",
 		"autoUpdater": true,
 		"autoUpdaterInterval": 12,
 		"logsChannel": "CHANNEL_ID"

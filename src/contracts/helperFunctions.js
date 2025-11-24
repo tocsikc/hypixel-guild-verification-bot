@@ -9,7 +9,7 @@ async function setDiscordNickname(member, newNick) {
 
         const me = guild.members.me || await guild.members.fetch(client.user.id).catch(() => null);
         if (!me) {
-            await errorLogger(client, `[NICK] Could not resolve bot member in guild ${guild.id}`);
+            await errorLogger(client, `[ERROR] Could not resolve bot member in guild ${guild.id}`);
             return false;
         }
 
@@ -23,10 +23,6 @@ async function setDiscordNickname(member, newNick) {
         }
 
         if (me.roles.highest.position <= member.roles.highest.position) {
-            await errorLogger(
-                client,
-                `[ERROR] Cannot change nickname of ${member.user.tag} (${member.id}) due to role hierarchy`
-            );
             return false;
         }
 
