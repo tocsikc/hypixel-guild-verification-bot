@@ -23,7 +23,7 @@ module.exports = {
         const nickBlacklistRole = config.other.nickBlacklistRole;
         const verifiedRole = config.guild.verifiedRole;
         
-        if (interaction.member.roles.cache.has(verifiedRole)) {
+        if (!interaction.member.roles.cache.has(verifiedRole)) {
             return interaction.editReply({
                 content:`\`❌\` You must be verified to use this role! (<@&${verifiedRole}> required)`,
                 flags: MessageFlags.Ephemeral
