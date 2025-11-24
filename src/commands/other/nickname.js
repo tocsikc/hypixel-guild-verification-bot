@@ -56,7 +56,7 @@ module.exports = {
             await addNick(interaction.user.id, nickname);
         }
 
-        await nicknameLogger(interaction.client, discordId, nickname);
+        await nicknameLogger(interaction.client, interaction.user.id, nickname);
         
         const uuid = await getUUID(interaction.user.id);
         await updateRoles(interaction.client, interaction.user.id, uuid);
