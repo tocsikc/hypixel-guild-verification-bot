@@ -93,7 +93,7 @@ async function nicknameLogger(client, discordId, nickname=null) {
 
         const nickEmbed = new EmbedBuilder()
             .setAuthor({ name: '🚨 Logger → 📝 Nickname Changes'})
-            .setDescription(`**<@${discordId}>'s nickname has been updated: ${nickname}.`)
+            .setDescription(`**<@${discordId}>'s nickname has been updated: ${nickname}.**`)
             .setColor('#c9780f')
             .setFooter({text: `Guild Verification Bot • by @tocsikc`})
             .setTimestamp();
