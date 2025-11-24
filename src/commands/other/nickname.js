@@ -58,7 +58,7 @@ module.exports = {
         const uuid = await getUUID(interaction.user.id);
         await updateRoles(interaction.client, interaction.user.id, uuid);
         return interaction.editReply({
-            content:`\`❌\` Successfully updated your nickname to \`${nickname}\``,
+            content:`\`✅\` Successfully updated your nickname to \`${nickname}\``,
             flags: MessageFlags.Ephemeral
         });
     }   
