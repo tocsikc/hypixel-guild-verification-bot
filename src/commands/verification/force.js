@@ -194,7 +194,7 @@ module.exports = {
                 const embed = new EmbedBuilder()
                     .setColor("4BB543")
                     .setAuthor({ name: "✅ Nickname Set" })
-                    .setDescription(`<@${discordId}>'s nickname has been set to ${nickname}.`);
+                    .setDescription(`<@${discordId}>'s nickname has been set to \`${nickname}\`.`);
 
                 await addNick(discordId, nickname);
                 await nicknameLogger(interaction.client, discordId, nickname);
