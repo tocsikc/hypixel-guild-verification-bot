@@ -198,7 +198,7 @@ module.exports = {
 
                 await addNick(discordId, nickname);
                 await updateCommand.execute(interaction, {silent: true, discordId: discordId});
-                return interaction.reply({ embeds: [resetEmbed]})
+                return interaction.reply({ embeds: [embed]})
             }
         }
     }
