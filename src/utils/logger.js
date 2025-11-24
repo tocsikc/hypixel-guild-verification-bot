@@ -86,7 +86,7 @@ async function nicknameLogger(client, discordId, nickname=null) {
 
         const noNickEmbed = new EmbedBuilder()
             .setAuthor({ name: '🚨 Logger → 📝 Nickname Changes'})
-            .setDescription(`**<@${discordId}>'s nickname has been removed.`)
+            .setDescription(`**<@${discordId}>'s nickname has been removed.**`)
             .setColor('#c9780f')
             .setFooter({text: `Guild Verification Bot • by @tocsikc`})
             .setTimestamp();
