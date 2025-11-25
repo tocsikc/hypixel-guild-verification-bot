@@ -44,6 +44,17 @@ async function updateRoles(client, discordId, uuid) {
         return result;
     }
 
+    if (config.other.nicknames) {
+        const nickname = await getNickname(discordId);
+        console.log(nickname)
+        if (nickname) {
+            await setDiscordNickname(discordMember, nickname);
+        } else {
+            const discordNickname = await getUsername(uuid);
+            await setDiscordNickname(discordMember, discordNickname);
+            console.log(discordNickname)
+        }   
+    }
 
     const guildData = await getGuildByName(config.guild.name);
 
@@ -99,18 +110,6 @@ async function updateRoles(client, discordId, uuid) {
         const joinTimeSeconds = Math.floor(joinTime / 1000)
         removedRoles = removedRoles.filter(r => r !== guildRankRole);
         result = `\`🟩\` <@&${config.guild.guildRole}>${timeRole ? `\n\`🟩\` <@&${timeRole}> (<t:${joinTimeSeconds}:R>)` : ''}\nGuild Rank: \`${guildMember.rank}\``;
-    }
-
-    if (config.other.nicknames) {
-        const nickname = await getNickname(discordId);
-        console.log(nickname)
-        if (nickname) {
-            await setDiscordNickname(discordMember, nickname);
-        } else {
-            const discordNickname = await getUsername(uuid);
-            await setDiscordNickname(discordMember, discordNickname);
-            console.log(discordNickname)
-        }   
     }
 
     removedRoles.push(config.guild.unverifiedRole);
