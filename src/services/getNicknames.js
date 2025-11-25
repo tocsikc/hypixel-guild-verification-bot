@@ -28,6 +28,7 @@ async function saveNicknames(db) { // Save and close linked.json
 async function addNick(discordID, nickname) { // Add user to database
     const db = await loadNicknames();
     db[discordID] = nickname;
+    console.log(db)
     await saveNicknames(db);
 }
 
