@@ -103,14 +103,14 @@ async function updateRoles(client, discordId, uuid) {
 
     if (config.other.nicknames) {
         const nickname = await getNickname(discordId);
+        console.log(nickname)
         if (nickname) {
             await setDiscordNickname(discordMember, nickname);
         } else {
             const discordNickname = await getUsername(uuid);
             await setDiscordNickname(discordMember, discordNickname);
-        }
-        
-        
+            console.log(discordNickname)
+        }   
     }
 
     removedRoles.push(config.guild.unverifiedRole);
