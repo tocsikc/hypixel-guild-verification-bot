@@ -114,7 +114,7 @@ module.exports = {
                     if (discord) {
                         const discordId = discord.id;
 
-                        await updateCommand.execute(interaction, {discordId: discordId});
+                        return updateCommand.execute(interaction, {discordId: discordId});
                     } else if (!discord) {
                         await interaction.deferReply();
                         const db = await loadDB();
