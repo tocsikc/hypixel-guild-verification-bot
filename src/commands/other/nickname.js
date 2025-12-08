@@ -54,7 +54,7 @@ module.exports = {
             await removeNick(interaction.user.id);
         } else {
             const blockedNicknames = config.other.blockedNicknames;
-            if (blockedNicknames.some(nickname.lower())) {
+            if (blockedNicknames.some(nickname.toLowerCase())) {
                 return interaction.editReply({
                     content:`\`❌\` This nickname is not allowed!`,
                     flags: MessageFlags.Ephemeral
