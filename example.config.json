@@ -24,6 +24,16 @@
 			}
 		]
 	},
+	"weeklyRequirements": {
+		"enabled":  false,
+		"minGexp": 25000,
+		"ranks": [
+			{
+				"name": "GUILD_RANK",
+				"gexp": 100000
+			}
+		]
+	},
 	"permissions": {
 		"devRole": "ROLE_ID",
 		"moderatorRole": "ROLE_ID",
@@ -33,6 +43,7 @@
 		"nicknames": false,
 		"nickPermsRoles": ["ROLE_ID", "Leave array empty for no permission check [] "],
 		"nickBlacklistRole": "ROLE_ID",
+		"blockedNicknames": ["STRING"],
 		"autoUpdater": true,
 		"autoUpdaterInterval": 12,
 		"logsChannel": "CHANNEL_ID"

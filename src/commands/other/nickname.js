@@ -53,6 +53,13 @@ module.exports = {
         if (!nickname) {
             await removeNick(interaction.user.id);
         } else {
+            const blockedNicknames = config.other.blockedNicknames;
+            if (blockedNicknames.some(nickname)) {
+                return interaction.editReply({
+                    content:`\`❌\` This nickname is not allowed!`,
+                    flags: MessageFlags.Ephemeral
+                });
+            } 
             await addNick(interaction.user.id, nickname);
         }
 

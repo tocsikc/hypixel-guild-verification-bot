@@ -7,7 +7,6 @@ const { errorLogger, nicknameLogger } = require('../../utils/logger.js');
 const { getGuildByName } = require('../../services/hypixel.js');
 const { addNick, removeNick } = require('../../services/getNicknames');
 
-const config = require('../../../config.json');
 const updateCommand = require("./update.js");
 const unverifyCommand = require("./unverify.js");
 
