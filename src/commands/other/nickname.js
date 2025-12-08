@@ -55,7 +55,7 @@ module.exports = {
         } else {
             const blockedNicknames = config.other.blockedNicknames;
             const nickLower = nickname.toLowerCase();
-            if (blockedNicknames.some(nickLower)) {
+            if (blockedNicknames.includes(nickLower)) {
                 return interaction.editReply({
                     content:`\`❌\` This nickname is not allowed!`,
                     flags: MessageFlags.Ephemeral
