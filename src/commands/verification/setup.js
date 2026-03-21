@@ -18,8 +18,18 @@ module.exports = {
 			.setLabel('✅ Verify')
 			.setStyle(ButtonStyle.Success);
 
+        const updateButton = new ButtonBuilder()
+            .setCustomId('update_button')
+			.setLabel('🛠️ Update')
+			.setStyle(ButtonStyle.Danger);
+
+        const unverifyButton = new ButtonBuilder()
+            .setCustomId('unverify_button')
+			.setLabel('❌ Unverify')
+			.setStyle(ButtonStyle.Danger);
+
         const actionRow = new ActionRowBuilder()
-            .addComponents(verifyButton);
+            .addComponents(verifyButton, updateButton, unverifyButton);
 
         const verifyEmbed = new EmbedBuilder()
             .setColor('5865F2')
@@ -30,7 +40,7 @@ module.exports = {
             })
             .addFields({
                 name: 'IMPORTANT!',
-                value: '- We will **NOT** ask for your **Minecraft email**.\n- You must have your Discord linked on Hypixel socials.\n- Check Below for help!'
+                value: '- We will **NOT** ask for your **Minecraft email**.\n- You must have your Discord linked on Hypixel socials. Check Below for help!\n- If you are already linked, you can update or unverify.'
             })
             .setImage('https://cdn.discordapp.com/attachments/1438936349540487168/1440411696639512586/8mb.video-N9F-goe91F0m.gif?ex=691e0f6e&is=691cbdee&hm=244f90322c580970da6b6d8f235378e80800248b9339ea7041165ed08b139725&')
             
