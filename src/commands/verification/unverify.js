@@ -11,44 +11,57 @@ module.exports = {
         .setName('unverify')
         .setDescription('Unlink your account from the guild.'),
 
-    async execute(interaction, extra = {silent: false, discordId: null}) {
+    async execute(interaction, extra = { silent: false, discordId: null }) {
         try {
-            await interaction.deferReply();
-            await interaction.editReply({ content: `\`⛓️‍💥\` Attempting to unlink user...` });
+            if (!extra.silent) {
+                await interaction.deferReply();
+                await interaction.editReply({ content: `\`⛓️‍💥\` Attempting to unlink user...` });
+            }
 
             const discordId = extra.discordId ?? interaction.user.id;
             const discordMember = await interaction.guild.members.fetch(discordId);
 
             if (inDB(discordId) === false) {
-                result = `\`❌\` ${discordMember.user} is not linked!\n-# Use /verify to link account.`
+                const result = `\`❌\` ${discordMember.user} is not linked!\n-# Use /verify to link account.`;
+
                 if (!extra.silent) {
-                    return interaction.followUp({
-                        content: result
-                    });
+                    return interaction.followUp({ content: result });
                 }
-                return [result];
+                return result;
             }
-            
+
             await removeUser(discordId);
 
-            await updateCommand.execute(interaction, {silent: true, discordId: discordId, uuid: null});
+            await updateCommand.execute(interaction, {
+                silent: true,
+                discordId: discordId,
+                uuid: null
+            });
 
             const embed = new EmbedBuilder()
                 .setColor("4BB543")
                 .setAuthor({ name: "✅ Account unlinked" })
-                .setDescription(`User <@${discordId}> has been unverified.`)
+                .setDescription(`User <@${discordId}> has been unverified.`);
 
-            await interaction.editReply({ embeds: [embed] });
+            if (!extra.silent) {
+                await interaction.editReply({ embeds: [embed] });
+            }
+
+            return [embed, { embed: true }]; // 👈 IMPORTANT
 
         } catch (error) {
             await errorLogger(interaction.client, error);
-                        
+
             const errorEmbed = new EmbedBuilder()
                 .setColor(15548997)
                 .setAuthor({ name: "❌ An Error has occurred" })
-                .setDescription(`\`\`\`${error}\`\`\``)
+                .setDescription(`\`\`\`${error}\`\`\``);
 
-            await interaction.editReply({ embeds: [errorEmbed] });
+            if (!extra.silent) {
+                await interaction.editReply({ embeds: [errorEmbed] });
+            }
+
+            return [errorEmbed, { embed: true }];
         }
     }
 };

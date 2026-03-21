@@ -154,8 +154,9 @@ module.exports = {
                 .setDescription(`Updated roles for <@${discordId}> (\`${await getUsername(uuid)}\`)\n${resultText}`)
                 .setColor('#13e436')
 
-                await interaction.editReply({ embeds: [successEmbed]});
+                return interaction.editReply({ embeds: [successEmbed]});
             }
+            return resultText;
 
         } catch (error) {
             await errorLogger(interaction.client, error);

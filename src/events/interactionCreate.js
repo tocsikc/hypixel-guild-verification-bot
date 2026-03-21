@@ -71,7 +71,6 @@ module.exports = {
 				}
 			}
 		} else if (interaction.isButton()) {
-			const id = interaction.customId;
 			switch (interaction.customId) {
 				case "verify_button": {
 					const verifyModal = new ModalBuilder()
@@ -92,6 +91,8 @@ module.exports = {
 					return interaction.showModal(verifyModal);
 				}
 				case "update_button": {
+					await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
 					const result = await update.execute(interaction, { silent: true });
 
 					if (result) {
@@ -109,6 +110,8 @@ module.exports = {
 					}
 				}
 				case "unverify_button": {
+					await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+					
 					const result = await unverify.execute(interaction, { silent: true });
 
 					if (result) {
