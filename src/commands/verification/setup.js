@@ -21,7 +21,7 @@ module.exports = {
         const updateButton = new ButtonBuilder()
             .setCustomId('update_button')
 			.setLabel('🛠️ Update')
-			.setStyle(ButtonStyle.Danger);
+			.setStyle(ButtonStyle.Secondary);
 
         const unverifyButton = new ButtonBuilder()
             .setCustomId('unverify_button')

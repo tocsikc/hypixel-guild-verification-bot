@@ -89,19 +89,19 @@ module.exports = {
 
 					verifyModal.addComponents(verifyActionRow);
 
-					await interaction.showModal(verifyModal);
+					return interaction.showModal(verifyModal);
 				}
 				case "update_button": {
 					const result = await update.execute(interaction, { silent: true });
 
 					if (result) {
 						if (result[1]?.embed === true) {
-							await interaction.editReply({
+							return interaction.editReply({
 								embeds: [result[0]],
 								flags: MessageFlags.Ephemeral
 							});
 						} else {
-							await interaction.editReply({
+							return interaction.editReply({
 								content: result[0],
 								flags: MessageFlags.Ephemeral
 							});
@@ -113,12 +113,12 @@ module.exports = {
 
 					if (result) {
 						if (result[1]?.embed === true) {
-							await interaction.editReply({
+							return interaction.editReply({
 								embeds: [result[0]],
 								flags: MessageFlags.Ephemeral
 							});
 						} else {
-							await interaction.editReply({
+							return interaction.editReply({
 								content: result[0],
 								flags: MessageFlags.Ephemeral
 							});
