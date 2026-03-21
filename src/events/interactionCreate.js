@@ -105,9 +105,17 @@ module.exports = {
 
 					const result = await unverify.execute(interaction, { silent: true });
 
-					return interaction.editReply({
-						content: result
-					});
+					if (result) {
+						const [data, meta] = Array.isArray(result)
+							? result
+							: [result, { embed: false }];
+
+						if (meta?.embed) {
+							return interaction.editReply({ embeds: [data] });
+						} else {
+							return interaction.editReply({ content: data });
+						}
+					}
 				}
 			} 
 			
