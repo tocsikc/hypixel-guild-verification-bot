@@ -147,16 +147,16 @@ module.exports = {
                 : await getUUID(discordId);
 
             const resultText = await updateRoles(interaction.client, discordId, uuid)
-
+            const result = `Updated roles for <@${discordId}> (\`${await getUsername(uuid)}\`)\n${resultText}`
             if (!extra.silent) {
                 const successEmbed = new EmbedBuilder()
                 .setAuthor({ name: ' ✅ Roles Updated'})
-                .setDescription(`Updated roles for <@${discordId}> (\`${await getUsername(uuid)}\`)\n${resultText}`)
+                .setDescription(result)
                 .setColor('#13e436')
 
                 return interaction.editReply({ embeds: [successEmbed]});
             }
-            return resultText;
+            return result;
 
         } catch (error) {
             await errorLogger(interaction.client, error);

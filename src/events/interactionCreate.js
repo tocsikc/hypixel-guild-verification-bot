@@ -95,38 +95,20 @@ module.exports = {
 
 					const result = await update.execute(interaction, { silent: true });
 
-					if (result) {
-						if (result[1]?.embed === true) {
-							return interaction.editReply({
-								embeds: [result[0]],
-								flags: MessageFlags.Ephemeral
-							});
-						} else {
-							return interaction.editReply({
-								content: result[0],
-								flags: MessageFlags.Ephemeral
-							});
-						}
-					}
+					return interaction.editReply({
+						embeds: result,
+						flags: MessageFlags.Ephemeral
+					});
 				}
 				case "unverify_button": {
 					await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-					
+
 					const result = await unverify.execute(interaction, { silent: true });
 
-					if (result) {
-						if (result[1]?.embed === true) {
-							return interaction.editReply({
-								embeds: [result[0]],
-								flags: MessageFlags.Ephemeral
-							});
-						} else {
-							return interaction.editReply({
-								content: result[0],
-								flags: MessageFlags.Ephemeral
-							});
-						}
-					}
+					return interaction.editReply({
+						embeds: result,
+						flags: MessageFlags.Ephemeral
+					});
 				}
 			} 
 			
