@@ -146,8 +146,11 @@ module.exports = {
                 ? extra.uuid
                 : await getUUID(discordId);
 
-            const resultText = await updateRoles(interaction.client, discordId, uuid)
-            const result = `Updated roles for <@${discordId}> (\`${await getUsername(uuid)}\`)\n${resultText}`
+            const resultText = await updateRoles(interaction.client, discordId, uuid);
+            
+            const username = uuid ? await getUsername(uuid) : "Unlinked";
+            const result = `Updated roles for <@${discordId}> (\`${username}\`)\n${resultText}`;
+
             if (!extra.silent) {
                 const successEmbed = new EmbedBuilder()
                 .setAuthor({ name: ' ✅ Roles Updated'})

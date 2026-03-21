@@ -106,7 +106,7 @@ module.exports = {
 					const result = await unverify.execute(interaction, { silent: true });
 
 					return interaction.editReply({
-						embeds: result,
+						embeds: [result],
 						flags: MessageFlags.Ephemeral
 					});
 				}
