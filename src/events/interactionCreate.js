@@ -96,18 +96,17 @@ module.exports = {
 					const result = await update.execute(interaction, { silent: true });
 
 					return interaction.editReply({
-						embeds: result,
-						flags: MessageFlags.Ephemeral
+						embeds: [result]
 					});
 				}
+
 				case "unverify_button": {
 					await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
 					const result = await unverify.execute(interaction, { silent: true });
 
 					return interaction.editReply({
-						embeds: [result],
-						flags: MessageFlags.Ephemeral
+						content: result
 					});
 				}
 			} 

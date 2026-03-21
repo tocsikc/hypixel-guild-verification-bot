@@ -147,19 +147,20 @@ module.exports = {
                 : await getUUID(discordId);
 
             const resultText = await updateRoles(interaction.client, discordId, uuid);
-            
+
             const username = uuid ? await getUsername(uuid) : "Unlinked";
             const result = `Updated roles for <@${discordId}> (\`${username}\`)\n${resultText}`;
 
-            if (!extra.silent) {
-                const successEmbed = new EmbedBuilder()
+            const successEmbed = new EmbedBuilder()
                 .setAuthor({ name: ' ✅ Roles Updated'})
                 .setDescription(result)
-                .setColor('#13e436')
+                .setColor('#13e436');
+
+            if (!extra.silent) {
 
                 return interaction.editReply({ embeds: [successEmbed]});
             }
-            return result;
+            return successEmbed;
 
         } catch (error) {
             await errorLogger(interaction.client, error);
