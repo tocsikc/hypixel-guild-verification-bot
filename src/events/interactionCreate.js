@@ -1,6 +1,8 @@
 const { Events, MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const { permissions } = require('../../config.json');
 const verify = require('../commands/verification/verify.js');
+const update = require('../commands/verification/update.js');
+const unverify = require('../commands/verification/unverify.js');
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -70,25 +72,62 @@ module.exports = {
 			}
 		} else if (interaction.isButton()) {
 			const id = interaction.customId;
+			switch (interaction.customId) {
+				case "verify_button": {
+					const verifyModal = new ModalBuilder()
+						.setCustomId('verifyModal')
+						.setTitle('Verify your account');
 
-			if (id === 'verify_button') {
-				const verifyModal = new ModalBuilder()
-					.setCustomId('verifyModal')
-					.setTitle('Verify your account');
+					const usernameInput = new TextInputBuilder()
+						.setCustomId('usernameInput')
+						.setLabel('What\'s your Minecraft username?')
+						.setPlaceholder('Steve')
+						.setStyle(TextInputStyle.Short)
+						.setRequired(true);
 
-				const usernameInput = new TextInputBuilder()
-					.setCustomId('usernameInput')
-					.setLabel('What\'s your Minecraft username?')
-					.setPlaceholder('Steve')
-					.setStyle(TextInputStyle.Short)
-					.setRequired(true);
+					const verifyActionRow = new ActionRowBuilder().addComponents(usernameInput);
 
-				const verifyActionRow = new ActionRowBuilder().addComponents(usernameInput);
+					verifyModal.addComponents(verifyActionRow);
 
-				verifyModal.addComponents(verifyActionRow);
+					await interaction.showModal(verifyModal);
+				}
+				case "update_button": {
+					const result = await update.execute(interaction, { silent: true });
 
-				await interaction.showModal(verifyModal);
-			}
+					if (result) {
+						if (result[1]?.embed === true) {
+							await interaction.editReply({
+								embeds: [result[0]],
+								flags: MessageFlags.Ephemeral
+							});
+						} else {
+							await interaction.editReply({
+								content: result[0],
+								flags: MessageFlags.Ephemeral
+							});
+						}
+					}
+				}
+				case "unverify_button": {
+					const result = await unverify.execute(interaction, { silent: true });
+
+					if (result) {
+						if (result[1]?.embed === true) {
+							await interaction.editReply({
+								embeds: [result[0]],
+								flags: MessageFlags.Ephemeral
+							});
+						} else {
+							await interaction.editReply({
+								content: result[0],
+								flags: MessageFlags.Ephemeral
+							});
+						}
+					}
+				}
+			} 
+			
+			
 		} else if (interaction.isModalSubmit()) {
 			if (interaction.customId === 'verifyModal') {
 				await interaction.deferReply({ flags: MessageFlags.Ephemeral });

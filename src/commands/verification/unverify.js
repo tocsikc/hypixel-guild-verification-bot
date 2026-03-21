@@ -20,13 +20,13 @@ module.exports = {
             const discordMember = await interaction.guild.members.fetch(discordId);
 
             if (inDB(discordId) === false) {
-                await interaction.editReply({
-                    content: `\`❌\` Something went wrong...`
-                });
-                return interaction.followUp({
-                    content: `\`❌\` ${discordMember.user} is not linked!\n-# Use /verify to link account.`,
-                    flags: MessageFlags.Ephemeral
-                });
+                result = `\`❌\` ${discordMember.user} is not linked!\n-# Use /verify to link account.`
+                if (!extra.silent) {
+                    return interaction.followUp({
+                        content: result
+                    });
+                }
+                return [result];
             }
             
             await removeUser(discordId);

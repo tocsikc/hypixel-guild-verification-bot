@@ -33,14 +33,12 @@ module.exports = {
             const nickname = player.displayname;
 
             if (await inDB(discordId, uuid) === 'discord') {
-                result = '\`❌\` You are already linked. \n-# Use /unverify to unlink account.'
+                await updateRoles(interaction.client, discordId, uuid);
+
+                result = '\`🛠️\` You are already linked. Updating your roles... \n-# Use /unverify to unlink account.'
                 if (!extra.silent) {
-                    await interaction.editReply({
-                        content: `\`❌\` Something went wrong...`
-                    });
-                    return interaction.followUp({
-                        content: result,
-                        flags: MessageFlags.Ephemeral
+                    return interaction.editReply({
+                        content: result
                     });
                 } else {
                     return [result];
@@ -48,12 +46,8 @@ module.exports = {
             } else if (await inDB(discordId, uuid) === 'minecraft') {
                 result = `\`❌\` \`${nickname}\` is linked to another Discord account.`
                 if (!extra.silent) {
-                    await interaction.editReply({
-                        content: `\`❌\` Something went wrong...`
-                    });
-                    return interaction.followUp({
-                        content: result,
-                        flags: MessageFlags.Ephemeral
+                    return interaction.editReply({
+                        content: result
                     });
                 } else {
                     return [result];
@@ -65,12 +59,8 @@ module.exports = {
             if (!linkedDiscord) {
                 result = `\`❌\` \`${nickname}\` does not have a Discord linked.`
                 if (!extra.silent) {
-                    await interaction.editReply({
-                        content: `\`❌\` Something went wrong...`
-                    });
-                    return interaction.followUp({
-                        content: result,
-                        flags: MessageFlags.Ephemeral
+                    return interaction.editReply({
+                        content: result
                     });
                 } else {
                     return [result];
@@ -80,12 +70,8 @@ module.exports = {
             if (linkedDiscord !== discordMember.user.username) {
                 result = `\`❌\` \`${nickname}\` has been linked to a different Discord account (\`${linkedDiscord}\`).`
                 if (!extra.silent) {
-                    await interaction.editReply({
-                        content: `\`❌\` Something went wrong...`
-                    });
-                    return interaction.followUp({
-                        content: result,
-                        flags: MessageFlags.Ephemeral
+                    return interaction.editReply({
+                        content: result
                     });
                 } else {
                     return [result];
