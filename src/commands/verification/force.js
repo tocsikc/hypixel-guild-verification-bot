@@ -41,7 +41,7 @@ module.exports = {
                 .addUserOption(option => option.setName('discord').setDescription('Discord account').setRequired(true))
                 .addStringOption(option => option.setName('nickname').setDescription('Nickname (Empty to reset)')),
         ),
-    requiredRole: 'devRole',
+    requiredRole: 'moderatorRole',
 
     async execute(interaction) {
         switch (interaction.options.getSubcommand()) {
@@ -59,14 +59,14 @@ module.exports = {
                     const uuid = await getUuidByUsername(username);
 
                     if (await inDB(discordId, uuid) === 'discord') {
-                        return interaction.followUp({
-                            content: '\`❌\` This account is already linked. \n-# Use /force unverify to unlink account.',
-                            flags: MessageFlags.Ephemeral
+                        result = '\`❌\` This account is already linked. \n-# Use /force unverify to unlink account.'
+                        return interaction.editReply({
+                            content: result
                         });
                     } else if (await inDB(discordId, uuid) === 'minecraft') {
-                        return interaction.followUp({
-                            content: `\`❌\` \`${username}\` is linked to another Discord account.`,
-                            flags: MessageFlags.Ephemeral
+                        result = `\`❌\` \`${username}\` is linked to another Discord account.`
+                        return interaction.editReply({
+                            content: result
                         });
                     }
 
