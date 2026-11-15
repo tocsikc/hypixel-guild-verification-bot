@@ -165,10 +165,11 @@ module.exports = {
         } catch (error) {
             await errorLogger(interaction.client, error);
             if (!extra.silent) {
-                const errorEmbed = new EmbedBuilder()
-                .setAuthor({ name: '❌ An Error Occurred' })
-                .setDescription(`\`\`\`${error}\`\`\``)
-                .setColor('#e41313');
+                if (!error.includes('Invalid nickname')) {
+                    const errorEmbed = new EmbedBuilder()
+                    .setAuthor({ name: '❌ An Error Occurred' })
+                    .setDescription(`\`\`\`${error}\`\`\``)
+                    .setColor('#e41313');
                 
                 await interaction.editReply({
                     content: `\`❌\` Something went wrong...`
