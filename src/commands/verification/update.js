@@ -163,20 +163,22 @@ module.exports = {
             return successEmbed;
 
         } catch (error) {
-            if (!error.includes('Invalid nickname')) {
+            const errorMessage = error.message ?? String(error);
+
+            if (!errorMessage.includes('Invalid nickname')) {
                 await errorLogger(interaction.client, error);
             }
+
             if (!extra.silent) {
                 const errorEmbed = new EmbedBuilder()
                     .setAuthor({ name: '❌ An Error Occurred' })
-                    .setDescription(`\`\`\`${error}\`\`\``)
+                    .setDescription(`\`\`\`${errorMessage}\`\`\``)
                     .setColor('#e41313');
 
                 await interaction.editReply({
-                    content: `\`❌\` Something went wrong...`
+                    content: '`❌` Something went wrong...',
+                    embeds: [errorEmbed]
                 });
-
-                await interaction.editReply({ embeds: [errorEmbed]});
             }
         }
     }
