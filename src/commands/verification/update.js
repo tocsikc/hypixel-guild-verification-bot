@@ -163,14 +163,15 @@ module.exports = {
             return successEmbed;
 
         } catch (error) {
-            await errorLogger(interaction.client, error);
+            if (!error.includes('Invalid nickname')) {
+                await errorLogger(interaction.client, error);
+            }
             if (!extra.silent) {
-                if (!error.includes('Invalid nickname')) {
-                    const errorEmbed = new EmbedBuilder()
+                const errorEmbed = new EmbedBuilder()
                     .setAuthor({ name: '❌ An Error Occurred' })
                     .setDescription(`\`\`\`${error}\`\`\``)
                     .setColor('#e41313');
-                
+
                 await interaction.editReply({
                     content: `\`❌\` Something went wrong...`
                 });
